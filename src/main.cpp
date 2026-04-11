@@ -94,6 +94,7 @@ const struct option *gamescope_options = (struct option[]){
 	{ "immediate-flips", no_argument, nullptr, 0 },
 	{ "framerate-limit", required_argument, nullptr, 0 },
 	{ "lease-connector", required_argument, nullptr, 0 },
+	{ "ignore-touch-device", required_argument, nullptr, 0 },
 
 	// openvr options
 #if HAVE_OPENVR
@@ -693,6 +694,7 @@ int g_nPreferredOutputHeight = 0;
 bool g_bExposeWayland = false;
 const char *g_sOutputName = nullptr;
 const char *g_sLeaseConnectorName = nullptr;
+const char *g_sIgnoreTouchDevice = nullptr;
 bool g_bDebugLayers = false;
 bool g_bForceDisableColorMgmt = false;
 bool g_bRt = false;
@@ -828,6 +830,8 @@ int main(int argc, char **argv)
 					cv_shutdown_on_primary_child_death = false;
 				} else if (strcmp(opt_name, "lease-connector") == 0) {
 					g_sLeaseConnectorName = optarg;
+				} else if (strcmp(opt_name, "ignore-touch-device") == 0) {
+					g_sIgnoreTouchDevice = optarg;
 				} else if (strcmp(opt_name, "virtual-connector-strategy") == 0) {
 					for ( uint32_t i = 0; i < gamescope::VirtualConnectorStrategies::Count; i++ )
 					{

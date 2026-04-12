@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build gamescope (Flip DS fork)
+    runs-on: ubuntu-24.04
+    container:
+      image: registry.fedoraproject.org/fedora:41
+
+    steps:
+      - name: Install build deps
+        run: |
+          dnf install -y \
+            gcc gcc-c++ meson ninja-build cmake git pkg-config \
+            libdrm-devel mesa-libEGL-devel mesa-vulkan-devel vulkan-headers \
+            libX11-devel libXdamage-devel libXcomposite-devel libXcursor-devel \
+            libXrender-devel libXext-devel libXfixes-devel libXxf86vm-devel \
+            libXtst-devel libXres-devel libXmu-devel libXi-devel \
+            wayland-devel wayland-protocols-devel libxkbcommon-devel \
+            libinput-devel libeis-devel libcap-devel systemd-devel \
+            pixman-devel SDL2-devel pipewire-devel libdecor-devel \
+            luajit-devel libavif-devel hwdata-devel \
+            glslang benchmark-devel stb-devel glm-devel
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure
+        run: |
+          meson setup build \
+            --buildtype=release \
+            -Dpipewire=enabled \
+            -Dforce_fallback_for=wlroots,libliftoff,vkroots
+
+      - name: Build
+        run: ninja -C build -j$(nproc)
+
+      - name: Strip binary
+        run: strip build/src/gamescope
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/src/gamescope
+          body: |
+            Gamescope fork with DRM lease support for dual-screen handhelds.
+
+            **Changes vs upstream:**
+            - `--lease-connector <name>`: leases a connector + CRTC + plane, exposes DRM lease fd via Unix socket
+            - `--ignore-touch-device <name>`: skips named touch devices from libinput
+            - Disables HDR when color management pipeline unavailable
+            - Skips leased planes from liftoff allocation
+
+            Used by [flip-companion](https://github.com/mmogr/flip-companion) for AYANEO Flip 1S DS bottom screen.

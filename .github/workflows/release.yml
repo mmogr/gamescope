@@ -19,7 +19,7 @@ jobs:
         run: |
           dnf install -y \
             gcc gcc-c++ meson ninja-build cmake git pkg-config \
-            libdrm-devel mesa-libEGL-devel mesa-vulkan-devel vulkan-headers \
+            libdrm-devel mesa-libEGL-devel vulkan-loader-devel vulkan-headers \
             libX11-devel libXdamage-devel libXcomposite-devel libXcursor-devel \
             libXrender-devel libXext-devel libXfixes-devel libXxf86vm-devel \
             libXtst-devel libXres-devel libXmu-devel libXi-devel \
@@ -27,7 +27,7 @@ jobs:
             libinput-devel libeis-devel libcap-devel systemd-devel \
             pixman-devel SDL2-devel pipewire-devel libdecor-devel \
             luajit-devel libavif-devel hwdata-devel \
-            glslang benchmark-devel stb-devel glm-devel
+            glslang google-benchmark-devel stb-devel glm-devel
 
       - uses: actions/checkout@v4
         with:

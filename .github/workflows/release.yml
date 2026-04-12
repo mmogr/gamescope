@@ -46,10 +46,17 @@ jobs:
       - name: Strip binary
         run: strip build/src/gamescope
 
+      - name: Generate checksums
+        run: |
+          cd build/src
+          sha256sum gamescope > SHA256SUMS
+
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
-          files: build/src/gamescope
+          files: |
+            build/src/gamescope
+            build/src/SHA256SUMS
           body: |
             Gamescope fork with DRM lease support for dual-screen handhelds.
 

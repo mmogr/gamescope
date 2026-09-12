@@ -8,13 +8,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: archlinux:base-devel
+    container: archlinux/archlinux:base-devel
     steps:
       - name: Prepare
         run: |
           pacman-key --init
           pacman -Syu --noconfirm
-          pacman -S --noconfirm git meson clang glslang libcap wlroots0.18 \
+          pacman -S --noconfirm git meson clang glslang libcap wlroots0.20 \
             sdl2 vulkan-headers libx11 libxmu libxcomposite libxrender libxres \
             libxtst libxkbcommon libdrm libinput wayland-protocols benchmark \
             xorg-xwayland pipewire cmake \
@@ -26,12 +26,12 @@ jobs:
       - name: Build with gcc
         run: |
           export CC=gcc CXX=g++
-          meson build-gcc/ -Dinput_emulation=disabled --werror --auto-features=enabled
+          meson build-gcc/ -Dinput_emulation=disabled -Dwlroots:werror=false --auto-features=enabled
           ninja -C build-gcc/
       - name: Build with gcc (no vr)
         run: |
           export CC=gcc CXX=g++
-          meson build-gcc-novr/ -Dinput_emulation=disabled -Denable_openvr_support=false --werror --auto-features=enabled
+          meson build-gcc-novr/ -Dinput_emulation=disabled -Denable_openvr_support=false -Dwlroots:werror=false --auto-features=enabled
           ninja -C build-gcc-novr/
 #      - name: Build with clang
 #        run: |

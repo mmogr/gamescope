@@ -37,6 +37,7 @@ jobs:
         run: |
           meson setup build \
             --buildtype=release \
+            -Dwlroots:werror=false \
             -Dpipewire=enabled \
             -Dforce_fallback_for=wlroots,libliftoff,vkroots
 
